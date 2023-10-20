@@ -34,7 +34,7 @@ jobs:
         #severity_threshold: CRITICAL
         annotations: true
         dockerfile: ./Dockerfile
-        #severity: CRITICAL
+        severity: CRITICAL
 
     - name: Upload SARIF file
       if: ${{ steps.scan.outputs.sarif != '' }}
