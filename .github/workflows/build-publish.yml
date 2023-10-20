@@ -29,6 +29,7 @@ jobs:
         image: ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}}
         #severity_threshold: CRITICAL
         annotations: true
+        dockerfile: ./Dockerfile
         #severity: CRITICAL
 
     - name: Upload SARIF file
