@@ -37,7 +37,7 @@ jobs:
     #     docker login -u ${{env.DOCKER_USER}} -p ${{env.DOCKER_PASSWORD}}
     #     docker push ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}}
 
-  pubsh image to docker hub:
+  push:
     name: Push Images to Docker Hub Repositories
     runs-on: ubuntu-latest
     steps:
