@@ -1,0 +1,46 @@
+name: Build and Deploy to ECR
+env:
+  DOCKER_USER: {{secrets.DOCKER_HUB_USER}}
+  DOCKER_PASSWORD: {{secrets.DOCKER_HUB_TOKEN}}
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  
+  build:
+    
+    name: Build Image
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+    - name: Build and tag Image
+      env:
+        DOCKER_REPOSITORY: web-app-lab
+        IMAGE_TAG: nodejs_lab_image
+      run: |
+        docker build -t ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.IMAGE_TAG}} .
+        
+    # - name: Run Trivy vulnerability scanner
+    #   env:
+    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    #     ECR_REPOSITORY: lab-containers
+    #     IMAGE_TAG: nodejs_lab_image
+    #   uses: crazy-max/ghaction-container-scan@v3
+    #   with: 
+    #     image: ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}}
+    #     #severity_threshold: CRITICAL
+    #     severity: CRITICAL
+
+    - name: Push Image to Docker Hub
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: lab-containers
+        IMAGE_TAG: nodejs_lab_image
+      run: |
+        docker login -u {{env.DOCKER_USER}} -p {{env.DOCKER_HUB_TOKEN}}
+        docker push ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.IMAGE_TAG}}
+      
