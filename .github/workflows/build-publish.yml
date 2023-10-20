@@ -13,7 +13,7 @@ jobs:
   
   build:
     
-    name: Build and Scan Docker Images for ${{env.DOCKER_REPOSITORY}}
+    name: Build and Scan Docker Images
     runs-on: ubuntu-latest
 
     steps:
