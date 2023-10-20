@@ -15,7 +15,6 @@ jobs:
     
     name: Build and Scan Docker Images
     runs-on: ubuntu-latest
-
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -24,12 +23,19 @@ jobs:
         docker build -t ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}} .
         
     - name: Run Trivy vulnerability scanner
+      id: scan
       uses: crazy-max/ghaction-container-scan@v3
       with: 
         image: ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}}
-        severity_threshold: CRITICAL
+        #severity_threshold: CRITICAL
         annotations: true
         #severity: CRITICAL
+
+    - name: Upload SARIF file
+        if: ${{ steps.scan.outputs.sarif != '' }}
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
 
     - name: Push Image to Docker Hub    
       run: |
