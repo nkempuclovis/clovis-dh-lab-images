@@ -11,8 +11,7 @@ on:
 
 jobs:
   
-  build image:
-    
+  build:
     name: Build and Scan Docker Images for ${{env.DOCKER_REPOSITORY}}
     runs-on: ubuntu-latest
 
