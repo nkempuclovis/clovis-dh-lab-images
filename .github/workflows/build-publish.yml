@@ -1,4 +1,4 @@
-name: Build and Deploy to ECR
+name: Build and Deploy to Docker Hub
 env:
   DOCKER_USER: ${{secrets.DOCKER_HUB_USER}}
   DOCKER_PASSWORD: ${{secrets.DOCKER_HUB_TOKEN}}
@@ -12,8 +12,7 @@ on:
 jobs:
   
   build:
-    name: Build and Scan Docker Images for ${{env.DOCKER_REPOSITORY}}
-    runs-on: ubuntu-latest
+    name: Build Docker images
 
     steps:
     - name: Check out code
