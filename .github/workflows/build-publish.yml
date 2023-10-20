@@ -27,8 +27,9 @@ jobs:
       uses: crazy-max/ghaction-container-scan@v3
       with: 
         image: ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}}
-        #severity_threshold: CRITICAL
-        severity: CRITICAL
+        severity_threshold: CRITICAL
+        annotations: true
+        #severity: CRITICAL
 
     - name: Push Image to Docker Hub    
       run: |
