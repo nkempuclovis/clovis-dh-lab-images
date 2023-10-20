@@ -1,4 +1,4 @@
-name: Build and Deploy to Docker Hub
+name: Build and Deploy to ECR
 env:
   DOCKER_USER: ${{secrets.DOCKER_HUB_USER}}
   DOCKER_PASSWORD: ${{secrets.DOCKER_HUB_TOKEN}}
@@ -11,9 +11,11 @@ on:
 
 jobs:
   
-  build-image:
-    name: Build Docker images
+  build:
+    
+    name: Build and Scan Docker Images for ${{env.DOCKER_REPOSITORY}}
     runs-on: ubuntu-latest
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -21,29 +23,15 @@ jobs:
       run: |
         docker build -t ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}} .
         
-    # - name: Run Trivy vulnerability scanner
-    #   env:
-    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    #     ECR_REPOSITORY: lab-containers
-    #     IMAGE_TAG: nodejs_lab_image
-    #   uses: crazy-max/ghaction-container-scan@v3
-    #   with: 
-    #     image: ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}}
-    #     #severity_threshold: CRITICAL
-    #     severity: CRITICAL
+    - name: Run Trivy vulnerability scanner
+      uses: crazy-max/ghaction-container-scan@v3
+      with: 
+        image: ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}}
+        #severity_threshold: CRITICAL
+        severity: CRITICAL
 
-    # - name: Push Image to Docker Hub    
-    #   run: |
-    #     docker login -u ${{env.DOCKER_USER}} -p ${{env.DOCKER_PASSWORD}}
-    #     docker push ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}}
-
-  push-image:
-    name: Push Images to Docker Hub Repositories
-    runs-on: ubuntu-latest
-    needs:
-      - build-image
-    steps:
     - name: Push Image to Docker Hub    
       run: |
         docker login -u ${{env.DOCKER_USER}} -p ${{env.DOCKER_PASSWORD}}
         docker push ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}}
+      
