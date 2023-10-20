@@ -9,6 +9,10 @@ on:
   push:
     branches: [ master ]
 
+permissions:
+  actions: read
+  security-events: write
+  
 jobs:
   
   build:
