@@ -1,7 +1,9 @@
 name: Build and Deploy to ECR
 env:
-  DOCKER_USER: {{secrets.DOCKER_HUB_USER}}
-  DOCKER_PASSWORD: {{secrets.DOCKER_HUB_TOKEN}}
+  DOCKER_USER: ${{secrets.DOCKER_HUB_USER}}
+  DOCKER_PASSWORD: ${{secrets.DOCKER_HUB_TOKEN}}
+  DOCKER_REPOSITORY: web-app-lab
+  NODE_IMAGE_TAG: nodejs_lab_image
 
 on:
   push:
@@ -18,11 +20,8 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
     - name: Build and tag Image
-      env:
-        DOCKER_REPOSITORY: web-app-lab
-        IMAGE_TAG: nodejs_lab_image
       run: |
-        docker build -t ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.IMAGE_TAG}} .
+        docker build -t ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}} .
         
     # - name: Run Trivy vulnerability scanner
     #   env:
@@ -35,12 +34,8 @@ jobs:
     #     #severity_threshold: CRITICAL
     #     severity: CRITICAL
 
-    - name: Push Image to Docker Hub
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: lab-containers
-        IMAGE_TAG: nodejs_lab_image
+    - name: Push Image to Docker Hub    
       run: |
         docker login -u {{env.DOCKER_USER}} -p {{env.DOCKER_HUB_TOKEN}}
-        docker push ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.IMAGE_TAG}}
+        docker push ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}}
       
