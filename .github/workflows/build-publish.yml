@@ -11,9 +11,9 @@ on:
 
 jobs:
   
-  build:
+  build image:
     
-    name: Build Image
+    name: Build and Scan Docker Images for ${{env.DOCKER_REPOSITORY}}
     runs-on: ubuntu-latest
 
     steps:
@@ -34,8 +34,16 @@ jobs:
     #     #severity_threshold: CRITICAL
     #     severity: CRITICAL
 
+    # - name: Push Image to Docker Hub    
+    #   run: |
+    #     docker login -u ${{env.DOCKER_USER}} -p ${{env.DOCKER_PASSWORD}}
+    #     docker push ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}}
+
+  pubsh image to docker hub:
+    name: Push Images to Docker Hub Repositories
+    runs-on: ubuntu-latest
+    steps:
     - name: Push Image to Docker Hub    
       run: |
         docker login -u ${{env.DOCKER_USER}} -p ${{env.DOCKER_PASSWORD}}
         docker push ${{env.DOCKER_USER}}/${{env.DOCKER_REPOSITORY}}:${{env.NODE_IMAGE_TAG}}
-      
