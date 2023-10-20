@@ -15,7 +15,7 @@ permissions:
   
 jobs:
   
-  build:
+  build-scan-upload:
     
     name: Build and Scan Docker Images
     runs-on: ubuntu-latest
